@@ -1,10 +1,14 @@
 // lib/pages/home_shell.dart
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
+
 import 'landing_page.dart';
 import 'map_page.dart';
 import 'tickets_page.dart';
 import 'profile_page.dart';
+
+// Bulk upload service you created earlier
+import '../services/bulk_upload_service.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({
@@ -40,12 +44,24 @@ class _HomeShellState extends State<HomeShell> {
         _ => 'Profile',
       };
 
-  // Bottom bar order is: 0 Profile, 1 Add, 2 Map, 3 Tickets
-  // Map bar index -> page index
   void _onTapNav(int barIndex) {
     const map = [3, 0, 1, 2]; // Profile, Add, Map, Tickets
     setState(() => _index = map[barIndex]);
   }
+
+  // ---------- Bulk upload handler ----------
+  Future<void> _onBulkUpload() async {
+    final r = await BulkUploadService.pickAndUpload();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(r.msg),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: r.ok ? null : Theme.of(context).colorScheme.error,
+      ),
+    );
+  }
+  // ----------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +88,21 @@ class _HomeShellState extends State<HomeShell> {
             ),
           ),
         ),
-        actions: const [],
+        actions: [
+          IconButton(
+            tooltip: 'Bulk upload images',
+            icon: const Icon(Icons.file_upload_outlined),
+            onPressed: _onBulkUpload,
+          ),
+          const SizedBox(width: 4),
+        ],
       ),
 
       // LEFT slide drawer
       drawer: _AppDrawer(
         isDark: widget.isDark,
         onToggleTheme: widget.onToggleTheme,
-        onSelect: (route) {
+        onSelect: (route) async {
           Navigator.pop(context);
           switch (route) {
             case 'add':
@@ -91,7 +114,10 @@ class _HomeShellState extends State<HomeShell> {
             case 'tickets':
               setState(() => _index = 2);
               break;
-            case 'profile': // NEW
+            case 'bulk': // NEW in drawer
+              await _onBulkUpload();
+              break;
+            case 'profile':
               setState(() => _index = 3);
               break;
             case 'settings':
@@ -211,6 +237,14 @@ class _AppDrawer extends StatelessWidget {
               title: const Text('Tickets'),
               onTap: () => onSelect('tickets'),
             ),
+
+            // NEW: Bulk upload just below Tickets
+            ListTile(
+              leading: const Icon(Icons.file_upload_outlined),
+              title: const Text('Bulk upload'),
+              onTap: () => onSelect('bulk'),
+            ),
+
             const Divider(),
             SwitchListTile(
               secondary: Icon(isDark ? Icons.wb_sunny : Icons.dark_mode),
