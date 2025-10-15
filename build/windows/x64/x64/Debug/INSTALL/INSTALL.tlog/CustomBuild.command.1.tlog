@@ -1,0 +1,10 @@
+^C:\USERS\OMKAR\ONEDRIVE\DESKTOP\ASSETWEBAPP\ASSETWEBAPP\BUILD\WINDOWS\X64\CMAKEFILES\F5D2B188F2B0C621642B0978832F84A1\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
