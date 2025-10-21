@@ -6,6 +6,7 @@ import 'landing_page.dart';
 import 'map_page.dart';
 import 'tickets_page.dart';
 import 'profile_page.dart';
+import 'sign_detector.dart';
 
 // Bulk upload service you created earlier
 import '../services/bulk_upload_service.dart';
@@ -120,8 +121,21 @@ class _HomeShellState extends State<HomeShell> {
             case 'profile':
               setState(() => _index = 3);
               break;
+            case 'detect':
+              final label = await Navigator.push<String>(
+                context,
+                MaterialPageRoute(builder: (_) => const SignDetectPage()),
+              );
+              if (!mounted) return;
+              if (label != null && label.isNotEmpty) {
+                // Show result; if want to push it into Add form, do it here.
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Detected: $label')),
+                );
+              }
+              break;
             case 'settings':
-              // TODO: push settings page if you add one
+              // TODO: push settings page if add one
               break;
           }
         },
@@ -243,6 +257,12 @@ class _AppDrawer extends StatelessWidget {
               leading: const Icon(Icons.file_upload_outlined),
               title: const Text('Bulk upload'),
               onTap: () => onSelect('bulk'),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.traffic),
+              title: const Text('Detect Signage'),
+              onTap: () => onSelect('detect'),
             ),
 
             const Divider(),
