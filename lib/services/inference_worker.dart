@@ -17,7 +17,6 @@ void inferenceEntry(SendPort mainSendPort) async {
   double _iouThr = 0.45;
   double _confThr = 0.20;
 
-  // --- helpers (declare BEFORE use to avoid forward-ref errors) ---
   double _iou(Map<String, dynamic> a, Map<String, dynamic> b) {
     final ax1 = a['x'] as double;
     final ay1 = a['y'] as double;
@@ -45,7 +44,7 @@ void inferenceEntry(SendPort mainSendPort) async {
       final cls = rr[5].round();
       final lbl = (cls >= 0 && cls < _labels.length) ? _labels[cls] : 'id:$cls';
       double x1 = rr[0], y1 = rr[1], x2 = rr[2], y2 = rr[3];
-      double norm(double v, num size) => v > 1.2 ? v / size.toDouble() : v; // accept px or 0..1
+      double norm(double v, num size) => v > 1.2 ? v / size.toDouble() : v; 
       x1 = norm(x1, _inW).clamp(0.0, 1.0);
       y1 = norm(y1, _inH).clamp(0.0, 1.0);
       x2 = norm(x2, _inW).clamp(0.0, 1.0);

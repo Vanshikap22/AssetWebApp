@@ -20,7 +20,7 @@ class _SignDetectPageState extends State<SignDetectPage> {
   // ---- config ----
   static const String _modelPath = 'assets/models/best_model.tflite';
   static const String _labelsPath = 'assets/models/labels.txt';
-  static const List<int> kForcedShape = [1, 640, 640, 3]; // keep 640 as you requested
+  static const List<int> kForcedShape = [1, 640, 640, 3]; // lets keep 640 for now and test it, then we can try with 320 and 512
 
   // thresholds
   static const double _iouThr = 0.45;
@@ -40,7 +40,7 @@ class _SignDetectPageState extends State<SignDetectPage> {
   String? _error;
   int _frameCount = 0; // throttle frames
 
-  // labels fallback (overwritten by labels.txt if present)
+  // labels fallback (just in case)
   List<String> _labels = const ['regulatory', 'stop', 'warning'];
 
   // drawing
@@ -63,7 +63,7 @@ class _SignDetectPageState extends State<SignDetectPage> {
 
   Future<void> _init() async {
     try {
-      // Ensure assets exist (fail early with clear message)
+      // Ensure assets exist 
       final modelBytes = await _requireAsset(_modelPath);
       final labelsBytes = await _requireAsset(_labelsPath);
 
@@ -75,7 +75,7 @@ class _SignDetectPageState extends State<SignDetectPage> {
       );
       _cam = CameraController(
         back,
-        ResolutionPreset.medium, // keep medium; lag will be solved by isolate
+        ResolutionPreset.medium, // keep medium or low lag will be solved by isolate 
         enableAudio: false,
         imageFormatGroup: ImageFormatGroup.yuv420,
       );
@@ -90,7 +90,7 @@ class _SignDetectPageState extends State<SignDetectPage> {
           .toList();
       if (ls.isNotEmpty) _labels = ls;
 
-      // Start worker isolate (single listener)
+      // Start worker isolate 
       await _startWorker(modelBytes.buffer.asUint8List(), _labels);
 
       // Start camera stream once
@@ -152,7 +152,7 @@ class _SignDetectPageState extends State<SignDetectPage> {
       }
 
       if (t == 'result') {
-        final detsNorm = (m['dets'] as List).cast<Map>(); // already NMSed in worker
+        final detsNorm = (m['dets'] as List).cast<Map>();
         if (_cam != null && _cam!.value.isInitialized) {
           final pv = _cam!.value.previewSize!;
           final pw = pv.height.toDouble(); // rotated preview dims
@@ -186,7 +186,7 @@ class _SignDetectPageState extends State<SignDetectPage> {
   void _onFrame(CameraImage imgYUV) {
     // throttle a bit to keep the pipeline smooth without changing model size
     _frameCount = (_frameCount + 1) & 0x7fffffff;
-    if ((_frameCount % 2) != 0) return; // process 1 of every 2 frames
+    if ((_frameCount % 2) != 0) return; // process 1 of every 2 frames as in now we can change it to 1 
 
     if (_workerSend == null || _workerBusy || !mounted) return;
 
