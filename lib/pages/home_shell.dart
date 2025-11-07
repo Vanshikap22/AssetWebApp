@@ -7,6 +7,7 @@ import 'map_page.dart';
 import 'tickets_page.dart';
 import 'profile_page.dart';
 import 'sign_detector.dart';
+import 'video_upload.dart'; // NEW
 
 // Bulk upload service you created earlier
 import '../services/bulk_upload_service.dart';
@@ -30,22 +31,25 @@ class _HomeShellState extends State<HomeShell> {
   int _index = 0;
   int _ticketsBadge = 2;
 
-  // PAGE STACK ORDER: 0 Add, 1 Map, 2 Tickets, 3 Profile
+  // PAGE STACK ORDER: 0 Add, 1 Map, 2 Tickets, 3 Profile, 4 VideoUpload
   late final List<Widget> _pages = const [
     LandingPage(),
     MapPage(),
     TicketsPage(),
     ProfilePage(),
+    VideoUpload(), // NEW
   ];
 
   String get _title => switch (_index) {
         0 => 'Add Asset',
         1 => 'Map',
         2 => 'Tickets',
+        4 => 'Upload Video', // NEW
         _ => 'Profile',
       };
 
   void _onTapNav(int barIndex) {
+    // Bottom bar order: [Profile, Add, Map, Tickets] -> map to page indices
     const map = [3, 0, 1, 2]; // Profile, Add, Map, Tickets
     setState(() => _index = map[barIndex]);
   }
@@ -115,27 +119,29 @@ class _HomeShellState extends State<HomeShell> {
             case 'tickets':
               setState(() => _index = 2);
               break;
-            case 'bulk': // NEW in drawer
+            case 'bulk':
               await _onBulkUpload();
               break;
             case 'profile':
               setState(() => _index = 3);
               break;
+            case 'video': // NEW
+              setState(() => _index = 4);
+              break;
             case 'detect':
-              final label = await Navigator.push<String>(
-                context,
-                MaterialPageRoute(builder: (_) => const SignDetectPage()),
-              );
-              if (!mounted) return;
-              if (label != null && label.isNotEmpty) {
-                // Show result; if want to push it into Add form, do it here.
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Detected: $label')),
-                );
-              }
+              // final label = await Navigator.push<String>(
+              //   context,
+              //   MaterialPageRoute(builder: (_) => const SignDetectPage()),
+              // );
+              // if (!mounted) return;
+              // if (label != null && label.isNotEmpty) {
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(content: Text('Detected: $label')),
+              //   );
+              // }
               break;
             case 'settings':
-              // TODO: push settings page if add one
+              // TODO: push settings page if you add one
               break;
           }
         },
@@ -252,11 +258,18 @@ class _AppDrawer extends StatelessWidget {
               onTap: () => onSelect('tickets'),
             ),
 
-            // NEW: Bulk upload just below Tickets
+            // NEW: Bulk upload
             ListTile(
               leading: const Icon(Icons.file_upload_outlined),
               title: const Text('Bulk upload'),
               onTap: () => onSelect('bulk'),
+            ),
+
+            // NEW: Navigate to VideoUpload page
+            ListTile(
+              leading: const Icon(Icons.cloud_upload),
+              title: const Text('Upload Video'),
+              onTap: () => onSelect('video'),
             ),
 
             ListTile(
