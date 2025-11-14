@@ -5,7 +5,7 @@ This includes securing the codebase, APIs, backend services, and the cloud envir
 This document explains the security practices developers should follow.
 ## Supported Versions
 
-Use this section to tell about which versions of your project are
+This section to tell about which versions of your project are
 currently being supported with security updates.
 
 | Version | Supported          |
