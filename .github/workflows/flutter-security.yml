@@ -1,10 +1,10 @@
-name: Flutter Security & Build Check
+name: Flutter Security & Analysis
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "your-feature-branch" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "your-feature-branch" ]
 
 jobs:
   flutter-analyze-security:
@@ -17,12 +17,11 @@ jobs:
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
-        channel: "stable"
+        channel: stable
 
-    - name: Check Flutter dependencies (non-blocking)
+    - name: Check dependencies (non-blocking)
       run: flutter pub outdated || true
 
     - name: Run Flutter analyze
       run: flutter analyze
 
-    
