@@ -25,5 +25,5 @@ jobs:
     - name: Run Flutter analyze
       run: flutter analyze
 
-    - name: Build Flutter web app
-      run: flutter build web --release
+    - name: Build Flutter app (mobile)
+      run: flutter build apk --release
