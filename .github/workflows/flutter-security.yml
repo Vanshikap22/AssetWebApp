@@ -1,0 +1,29 @@
+name: Flutter Security & Build Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  flutter-analyze-security:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: "stable"
+
+    - name: Flutter dependency audit (security)
+      run: flutter pub outdated --mode=null-safety
+
+    - name: Flutter analyze (code quality)
+      run: flutter analyze
+
+    - name: Flutter web build (ensures project compiles)
+      run: flutter build web --release
