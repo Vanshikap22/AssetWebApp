@@ -38,3 +38,42 @@ Enable 2FA on GitHub
 Use strong passwords
 Keep systems updated
 Do not work on unsecured networks unless using VPN
+Automated Security Tools Enabled
+
+The repository uses built-in GitHub security tools:
+
+ CodeQL Scanning
+
+Automatically scans the code for vulnerabilities like:
+
+Input validation flaws
+
+Insecure dependencies
+
+Logic errors
+
+Unsafe patterns
+
+This runs on every push to main and every Pull Request.
+
+ Dependabot Alerts & Updates
+
+Alerts when:
+
+Libraries have known security vulnerabilities
+
+Outdated dependencies need updates
+
+Secret Scanning
+
+Automatically detects committed secrets (API keys, tokens etc.) and warns you immediately.
+
+ Branch Protection Rules
+
+Prevents insecure code from being merged by requiring:
+
+Passing CI checks
+
+CodeQL scan results
+
+Approved pull requests (if enabled)
