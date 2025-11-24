@@ -1,0 +1,64 @@
+name: Flutter Android CI
+
+on:
+  push:
+    branches:
+      - "**"        # Run on all branches
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  build:
+    name: Build & Test Flutter Android
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Install Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.3'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4. Run Flutter tests
+      - name: Run tests
+        run: flutter test
+
+      # 5. Run Dart Pub Audit (dependency security scan)
+      - name: Run Dart Pub Audit
+        run: |
+          dart pub global activate dart_pub_audit
+          dart pub audit --fail-on=critical || true
+        continue-on-error: true
+
+      # 6. Run Flutter Analyze (static code analysis)
+      - name: Run Flutter Analyze
+        run: flutter analyze || true
+
+      # 7. Build Android APK
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 8. Upload APK artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: flutter-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # 9. Upload reports
+      - name: Upload security & analysis reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: flutter-reports
+          path: |
+            dart_audit_report.json
+            flutter_analyze_report.json
