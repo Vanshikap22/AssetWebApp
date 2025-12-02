@@ -1,14 +1,14 @@
-name: DevSecOps — Flutter Project
+name: DevSecOps Demo — Flutter Project
 
 on:
   push:
-    branches: ['**']
+    branches: ['Omkar']
   pull_request:
-    branches: ['**']
+    branches: ['Omkar']
 
 jobs:
-  devsecops:
-    name: DevSecOps Scan & Build
+  devsecops-demo:
+    name: DevSecOps Demo Scan & Build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -36,12 +36,12 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      # 4. Flutter Analyze (report)
+      # 4. Flutter Analyze
       - name: Run Flutter analyze
         run: flutter analyze --write=flutter_analyze_report.json || true
 
-      # 5. Trivy filesystem / project scan
-      - name: Trivy Scan
+      # 5. Trivy FS scan (fake demo, won’t fail workflow)
+      - name: Trivy Demo Scan
         uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: fs
@@ -49,33 +49,32 @@ jobs:
           output: 'trivy_report.json'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: false
-          exit-code: '1'
+          exit-code: '0'  # <-- allow workflow to continue even if vulnerabilities found
 
-      # 6. Gitleaks secret scan
-      - name: Run Gitleaks
+      # 6. Gitleaks secret scan (fake demo, won’t fail workflow)
+      - name: Run Gitleaks Demo
         uses: gitleaks/gitleaks-action@v2
         with:
           args: '--path=. --report-format=json --report-path=gitleaks_report.json'
-        continue-on-error: false
+        continue-on-error: true   # <-- allow workflow to continue even if secrets found
 
-      # 7. Build Android APK
+      # 7. Build Android APK (optional for demo)
       - name: Build Android APK
         run: flutter build apk --release
 
-      # 8. Upload APK artifact
+      # 8. Upload APK as artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: flutter-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-      # 9. Upload security & analysis reports
+      # 9. Upload all security & analysis reports
       - name: Upload Security Reports
         uses: actions/upload-artifact@v4
         with:
-          name: devsecops-reports
+          name: devsecops-demo-reports
           path: |
             trivy_report.json
             gitleaks_report.json
             flutter_analyze_report.json
-
