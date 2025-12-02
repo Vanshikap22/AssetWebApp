@@ -1,6 +1,6 @@
 name: DevSecOps — Flutter Project
 
-# Trigger on any push or pull request to any branch
+# Trigger workflow on push or pull request to any branch
 on:
   push:
     branches: ['**']
@@ -16,7 +16,7 @@ jobs:
       security-events: write
 
     steps:
-      # 1) Checkout the code
+      # 1) Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -37,13 +37,13 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      # 4) Flutter Analyze
+      # 4) Flutter Analyze (generate report)
       - name: Run Flutter analyze
         run: flutter analyze --write=flutter_analyze_report.json || true
 
       # 5) Trivy FS scan (filesystem / dependencies)
       - name: Trivy Scan
-        uses: aquasecurity/trivy-action@v2
+        uses: aquasecurity/trivy-action@v1
         with:
           scan-type: fs
           format: 'json'
@@ -54,7 +54,7 @@ jobs:
 
       # 6) Gitleaks secret scan
       - name: Run Gitleaks
-        uses: zricethezav/gitleaks-action@v3
+        uses: zricethezav/gitleaks-action@v2
         with:
           args: '--path=. --report-format json --report-path gitleaks_report.json'
         continue-on-error: false
