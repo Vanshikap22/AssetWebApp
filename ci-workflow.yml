@@ -7,29 +7,29 @@ on:
   pull_request:
     branches: ['**']
   schedule:
-    - cron: '0 3 * * 0'   # weekly on Sunday at 03:00 UTC (adjust if needed)
+    - cron: '0 3 * * 0'   # weekly on Sunday at 03:00 UTC
 
 jobs:
   devsecops:
-    name: DevSecOps Scan & Build (Flutter Android)
+    name: DevSecOps Scan & Build
     runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
-      security-events: write   # required for CodeQL SARIF uploads
+      security-events: write
 
     steps:
-      # 1) checkout
+      # 1) Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2) Setup Java + Flutter
+      # 2) Setup Flutter
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.38.3'   # use your version; change if needed
+          flutter-version: '3.38.3'
 
       - name: Verify Flutter
         run: |
@@ -37,25 +37,19 @@ jobs:
           flutter doctor -v
 
       # 3) Install dependencies
-      - name: Install dependencies
+      - name: Flutter pub get
         run: flutter pub get
 
-      ####
-      # Static Application Security Testing (CodeQL)
-      ####
+      # 4) CodeQL analysis
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-          languages: 'javascript,python,go' # include languages CodeQL supports; keep general
-          # Note: CodeQL's Dart support may be limited; this still helps scan repo files it supports.
-
+          languages: 'javascript,python,go'
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
 
-      ####
-      # Dependency / Filesystem vulnerability scan (Trivy)
-      ####
-      - name: Trivy - Install action & run FS scan
+      # 5) Trivy filesystem scan
+      - name: Trivy FS scan
         uses: aquasecurity/trivy-action@v2
         with:
           scan-type: fs
@@ -63,49 +57,35 @@ jobs:
           output: 'trivy_report.json'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: false
-          exit-code: '1'    # exit code 1 on severity found -> job will fail
+          exit-code: '1'
 
-      ####
-      # Secret scanning (Gitleaks)
-      ####
-      - name: Run Gitleaks (detect secrets)
+      # 6) Gitleaks secret scan
+      - name: Run Gitleaks
         uses: zricethezav/gitleaks-action@v3
         with:
           args: '--path=. --report-format json --report-path gitleaks_report.json'
         continue-on-error: false
 
-      ####
-      # Dart / Flutter specific checks
-      ####
-      - name: Dart Pub Audit (dependency vulnerabilities)
+      # 7) Dart pub audit & flutter analyze
+      - name: Dart Pub Audit
         run: |
           dart pub global activate dart_pub_audit
           dart pub audit --json > dart_audit_report.json || true
 
-      - name: Flutter Analyze (static code analysis)
+      - name: Flutter Analyze
         run: flutter analyze --write=flutter_analyze_report.json || true
 
-      # Save the logs for the analysis steps (non-fatal by design)
-      - name: Save linter & audit outputs
-        run: |
-          ls -la
-          echo "Trivy, gitleaks and reports should be in workspace"
-
-      ####
-      # Build APK
-      ####
+      # 8) Build Android APK
       - name: Build Android APK (release)
         run: flutter build apk --release
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: flutter-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-      ####
-      # Upload all reports
-      ####
+      # 9) Upload all reports
       - name: Upload security & analysis reports
         uses: actions/upload-artifact@v4
         with:
