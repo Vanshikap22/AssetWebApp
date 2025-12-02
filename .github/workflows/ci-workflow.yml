@@ -41,9 +41,9 @@ jobs:
       - name: Run Flutter analyze
         run: flutter analyze --write=flutter_analyze_report.json || true
 
-      # 5) Trivy FS scan (filesystem / dependencies)
+            # Trivy FS scan (filesystem / dependencies)
       - name: Trivy Scan
-        uses: aquasecurity/trivy-action@v1
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: fs
           format: 'json'
@@ -52,9 +52,9 @@ jobs:
           ignore-unfixed: false
           exit-code: '1'
 
-      # 6) Gitleaks secret scan
+      # Gitleaks secret scan
       - name: Run Gitleaks
-        uses: zricethezav/gitleaks-action@v2
+        uses: zricethezav/gitleaks-action@stable
         with:
           args: '--path=. --report-format json --report-path gitleaks_report.json'
         continue-on-error: false
