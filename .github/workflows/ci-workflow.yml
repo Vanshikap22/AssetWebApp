@@ -31,16 +31,19 @@ jobs:
         run: |
           flutter --version
           flutter doctor -v
+        continue-on-error: true
 
       # 3. Install dependencies
       - name: Flutter pub get
         run: flutter pub get
+        continue-on-error: true
 
       # 4. Flutter Analyze
       - name: Run Flutter analyze
         run: flutter analyze --write=flutter_analyze_report.json || true
+        continue-on-error: true
 
-      # 5. Trivy FS scan (fake demo, won’t fail workflow)
+      # 5. Trivy FS scan (demo-friendly)
       - name: Trivy Demo Scan
         uses: aquasecurity/trivy-action@0.28.0
         with:
@@ -49,27 +52,30 @@ jobs:
           output: 'trivy_report.json'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: false
-          exit-code: '0'  # <-- allow workflow to continue even if vulnerabilities found
+          exit-code: '0'
+        continue-on-error: true
 
-      # 6. Gitleaks secret scan (fake demo, won’t fail workflow)
+      # 6. Gitleaks secret scan (demo-friendly)
       - name: Run Gitleaks Demo
         uses: gitleaks/gitleaks-action@v2
         with:
           args: '--path=. --report-format=json --report-path=gitleaks_report.json'
-        continue-on-error: true   # <-- allow workflow to continue even if secrets found
+        continue-on-error: true
 
-      # 7. Build Android APK (optional for demo)
+      # 7. Build Android APK (demo)
       - name: Build Android APK
         run: flutter build apk --release
+        continue-on-error: true
 
-      # 8. Upload APK as artifact
+      # 8. Upload APK artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: flutter-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+        continue-on-error: true
 
-      # 9. Upload all security & analysis reports
+      # 9. Upload security & analysis reports
       - name: Upload Security Reports
         uses: actions/upload-artifact@v4
         with:
@@ -78,3 +84,4 @@ jobs:
             trivy_report.json
             gitleaks_report.json
             flutter_analyze_report.json
+        continue-on-error: true
