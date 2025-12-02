@@ -1,2 +1,4 @@
 This file is created for testing and triggering the DevSecOps workflow run.
 No functional changes.
+AWS_SECRET_ACCESS_KEY = AKIA123456789TESTSECRET
+PASSWORD = admin12345
