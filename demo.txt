@@ -1,4 +1,9 @@
-This file is created for testing and triggering the DevSecOps workflow run.
-No functional changes.
-AWS_SECRET_ACCESS_KEY = AKIA123456789TESTSECRET
-PASSWORD = admin12345
+This is a demo file used for testing CI/CD workflows.
+No API keys, tokens, or sensitive information are stored here.
+
+Purpose:
+- Test GitHub Actions workflow
+- Validate Gitleaks scanning
+- Ensure secure development practices
+
+All data in this file is placeholder and safe.
