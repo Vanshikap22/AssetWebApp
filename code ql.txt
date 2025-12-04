@@ -1,0 +1,9 @@
+# --- CODEQL TEST (INSECURE CODE) ---
+void insecureFunction() {
+  var userInput = "DROP TABLE users;"; // SQL Injection example
+  print(userInput); // Insecure output
+}
+
+void hardcodedSecret() {
+  String password = "123456"; // Hardcoded credential vulnerability
+}
