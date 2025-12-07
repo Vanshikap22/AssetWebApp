@@ -1,6 +1,6 @@
 name: DevSecOps — Flutter (Android)
 
-# Run on push / PR for all branches, and scheduled weekly
+# Run on push / PR for all branches, and scheduled week
 on:
   push:
     branches: ['**']
