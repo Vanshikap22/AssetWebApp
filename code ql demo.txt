@@ -1,4 +1,4 @@
-# --- CODEQL TEST (INSECURE CODE) ---
+# --- CODEQL TEST (INSECURE CODE) --
 void insecureFunction() {
   var userInput = "DROP TABLE users;"; // SQL Injection example
   print(userInput); // Insecure output
