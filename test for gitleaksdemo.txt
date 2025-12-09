@@ -1,15 +1,7 @@
-# --- Fake Secrets for Testing (Gitleaks should FAIL) ---
-AWS_SECRET_ACCESS_KEY="FAKE-TEST-KEY-1234567890"
-API_TOKEN="AKIAFAKEAWSKEY1234567890
-DB_PASSWORD="P@ssword123"
+# --- GITLEAKS TEST (FAKE SECRETS) ---
+FAKE_AWS_ACCESS_KEY_ID = "AKIA123456789FAKEKEY"
+FAKE_AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYFAKESECRET"
+FAKE_PASSWORD = "Admin12345"
+FAKE_API_TOKEN = "ghp_1234567890EXAMPLETOKEN"
 
-AKIAFAKEAWSKEY1234567890
-
-
-# --- Fake Vulnerable Dependencies (Trivy should FAIL) ---
-FROM python:3.6
-RUN pip install django==1.0
-
-# Trigger DevSecOps workflow run
-# Random number: 928374
 
