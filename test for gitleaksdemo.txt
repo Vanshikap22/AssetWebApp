@@ -1,15 +1,12 @@
-# DevSecOps Workflow Trigger Test
+# --- Fake Secrets for Testing (Gitleaks should FAIL) ---
+AWS_SECRET_ACCESS_KEY="FAKE-TEST-KEY-1234567890"
+API_TOKEN="test_token_ABCDEF123456"
+DB_PASSWORD="P@ssword123"
 
-This file is updated to trigger the CI/CD DevSecOps workflow.
-There are no secrets, credentials, API keys, or vulnerabilities.
+# --- Fake Vulnerable Dependencies (Trivy should FAIL) ---
+FROM python:3.6
+RUN pip install django==1.0
 
-Purpose:
-- Verify Gitleaks scanning runs successfully
-- Verify Trivy vulnerability scanning runs
-- Validate that the GitHub Actions workflow executes correctly
-
-Trigger Timestamp:
-2025-12-08
-
--- End of Trigger Test --
+# Trigger DevSecOps workflow run
+# Random number: 928374
 
