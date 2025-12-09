@@ -1,1 +1,15 @@
+# DevSecOps Workflow Trigger Test
+
+This file is updated to trigger the CI/CD DevSecOps workflow.
+There are no secrets, credentials, API keys, or vulnerabilities.
+
+Purpose:
+- Verify Gitleaks scanning runs successfully
+- Verify Trivy vulnerability scanning runs
+- Validate that the GitHub Actions workflow executes correctly
+
+Trigger Timestamp:
+2025-12-08
+
+-- End of Trigger Test --
 
