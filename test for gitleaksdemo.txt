@@ -1,7 +1,10 @@
 # --- Fake Secrets for Testing (Gitleaks should FAIL) ---
 AWS_SECRET_ACCESS_KEY="FAKE-TEST-KEY-1234567890"
-API_TOKEN="test_token_ABCDEF123456"
+API_TOKEN="AKIAFAKEAWSKEY1234567890
 DB_PASSWORD="P@ssword123"
+
+AKIAFAKEAWSKEY1234567890
+
 
 # --- Fake Vulnerable Dependencies (Trivy should FAIL) ---
 FROM python:3.6
