@@ -1,5 +1,5 @@
 This is a demo file used for testing CI/CD workflows
-No API keys, tokens, or sensitive information are stored here.
+No API keys, tokens, or sensitive information are stored here
 
 Purpose:
 - Test GitHub Actions workflow
